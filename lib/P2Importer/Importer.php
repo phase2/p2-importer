@@ -3,7 +3,6 @@
 namespace P2Importer;
 
 use P2Importer\ImporterInterface;
-use P2Importer\P2Exception;
 
 class Importer implements ImporterInterface {
   protected $registry;

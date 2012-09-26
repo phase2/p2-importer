@@ -17,7 +17,7 @@ abstract class AbstractFieldType implements FieldTypeInterface {
    * @param $field_settings array
    *  Setting for the field type
    */
-  public function __construct($field_name, $import_field_name, $field_settings) {
+  public function __construct($field_name, $import_field_name, $field_settings = array()) {
     $this->field_name = $field_name;
     $this->import_field_name = $import_field_name;
     $this->settings = $field_settings;
@@ -37,5 +37,12 @@ abstract class AbstractFieldType implements FieldTypeInterface {
 
   public function getFieldSetting($name) {
     return $this->settings[$name];
+  }
+
+  /**
+   * Get the value for this field from a row
+   */
+  protected function getValue($row) {
+    return $row[$this->getImportFieldName()];
   }
 }

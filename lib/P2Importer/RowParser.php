@@ -4,6 +4,7 @@ namespace P2Importer;
 
 class RowParser extends AbstractDataStorage implements ParserInterface {
   public function parse(\Iterator $row, \Pimple $registry) {
+    $this->preProcess($row, $registry);
     $field_map = $registry['field_map'];
     foreach ($row as $field_name => $field_value) {
       // Does the field name exist in the map
@@ -22,12 +23,15 @@ class RowParser extends AbstractDataStorage implements ParserInterface {
         }
       }
     }
+
+    $this->postProcess($row, $registry);
     return $this;
   }
 
-  public function preProcess(\Pimple $registry) {}
+  public function preProcess(\Iterator $row, \Pimple $registry) {}
 
-  public function postProcess(\Pimple $registry) {
+  public function postProcess(\Iterator $row, \Pimple $registry) {
+    // Filter out empty values
     $field_map = $registry['field_map'];
     $row = clone $this->values;
     unset($this->values);
