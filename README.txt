@@ -1,4 +1,4 @@
-Creates a lite weight importor for Drupal.  There is no front end.
+Creates a lite weight importer for Drupal.  There is no front end.
 
 Fetcher:  Get data from a source and return an Iterator
 - CSV:  A csv file
