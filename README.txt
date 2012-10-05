@@ -73,4 +73,13 @@ The field map is an extension of Pimple P2Importer\FieldMap()
 
 - the addField method takes a closure that returns a FieldType object
 - the addUnique method takes a closure that returns an instance of P2Importer\UniqueField
+- the "as_is" setting just copies the imported value to the local and avoids any field logic
 
+Row Processor - This is what persists the data to drupal
+-------------
+- P2Importer\Processors\NodeRowProcessor: Updates or creates a node.  Uses the unique fields in the field map
+- P2Importer\Processors\DirectFieldRowProcessor: Does direct table updates on fields only.
+    This required State Machine Module to determine which revisions to update.
+    Does not work with file field
+    Only works with SQL field storage.
+    Only works on existing entities and not new ones

@@ -7,8 +7,6 @@ use P2Importer\DataContainer;
 
 class NodeRowProcessor implements ProcessorInterface {
   public function process(DataContainer $row, \Pimple $registry) {
-    $field_map = $registry['field_map'];
-
     global $user;
     $user = user_load(1); // Let's just avoid any issue that will upset me.
 
@@ -20,14 +18,26 @@ class NodeRowProcessor implements ProcessorInterface {
     }
 
     // Add the fields to the node
+
+    node_save($node);
+
+    return $this;
+  }
+
+  protected function process_node(DataContainer $row, $node, \Pimple $registry) {
+    $field_map = $registry['field_map'];
+
     foreach ($row as $field_name => $field_value) {
+      $field_type = $field_map[$field_name];
+      $field_settings = $field_type->getFieldSettings();
+
       // Property
-      if (is_a($field_map[$field_name], 'P2Importer\\FieldTypes\\Property')) {
+      if (!empty($field_settings['as_is'])) {
         $node->{$field_name} = $field_value;
       }
       else {
         // Get the settings
-        if (empty($field_map[$field_name]['field_settings']['multiple'])) {
+        if (empty($field_settings['multiple'])) {
           $node->{$field_name} = array(
             $node->language => array($field_value),
           );
@@ -70,10 +80,6 @@ class NodeRowProcessor implements ProcessorInterface {
         }
       }
     }
-
-    node_save($node);
-
-    return $this;
   }
 
   protected function stub_node(\Pimple $registry) {
