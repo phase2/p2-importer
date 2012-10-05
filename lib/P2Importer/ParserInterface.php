@@ -3,9 +3,9 @@
 namespace P2Importer;
 
 interface ParserInterface {
-  public function parse(\Iterator $result, \Pimple $registry);
+  public function parse(DataContainer $result, \Pimple $registry);
 
-  public function preProcess(\Iterator $row, \Pimple $registry);
+  public function preProcess(DataContainer $result, \Pimple $registry);
 
-  public function postProcess(\Iterator $row, \Pimple $registry);
+  public function postProcess(DataContainer $result, \Pimple $registry);
 }

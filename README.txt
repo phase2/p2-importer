@@ -1,4 +1,4 @@
-Creates a lite weight importor for Drupal.  There is no front end.
+Creates a lite weight importer for Drupal.  There is no front end.
 
 Fetcher:  Get data from a source and return an Iterator
 - CSV:  A csv file
@@ -17,6 +17,8 @@ Field Types:  Process each field from the source to the destination
 Parser:  Pares the Iterator from the Fetcher using the Field Types
 
 Processor:  Takes the output from the Parser and Persists the information
+
+Data Container:  The Transverible Array object
 
 
             ----------------               -------------
@@ -62,3 +64,13 @@ Pimple is used as a DI container.  See http://pimple.sensiolabs.org/
  - fetcher: The Fetch Class
  - ctype:  string value for the content type so save a node as if using the NodeRowProcessor
  - Language:  The language to use in the node
+ - data_container: The DataContainer Object.  Should use or extend P2Importer\DataContainer
+
+Field Map
+---------
+
+The field map is an extension of Pimple P2Importer\FieldMap()
+
+- the addField method takes a closure that returns a FieldType object
+- the addUnique method takes a closure that returns an instance of P2Importer\UniqueField
+

@@ -3,11 +3,10 @@
 namespace P2Importer\FieldTypes;
 
 use P2Importer\AbstractFieldType;
+use P2Importer\DataContainer;
 
 class NodeReference extends AbstractFieldType {
-  public function process(\Iterator $row) {
-    global $user;
-
+  public function process(DataContainer $row, \Pimple $registry) {
     // Get the cypte
     if (empty($this->settings['ctype']) || empty($this->settings['unique_fields'])) {
       return array();

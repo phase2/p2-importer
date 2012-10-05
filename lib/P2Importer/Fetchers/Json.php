@@ -3,7 +3,6 @@
 namespace P2Importer\Fetchers;
 
 use P2Importer\AbstractFetcher;
-use P2Importer\P2Exception;
 
 /**
  * Class to get JSON
@@ -16,19 +15,19 @@ class Json extends AbstractFetcher {
   /**
    * Get a request object
    *
-   * @throws \P2Importer\P2Exception
+   * @throws \Exception
    */
   public function load() {
     if (empty($this->settings['url'])) {
-      throw new P2Exception("Missing required setting: url");
+      throw new \Exception("Missing required setting: url");
     }
 
     $reply = drupal_http_request($this->settings['url']);
 
-    if ($reply !== 200) {
+    if (!empty($reply->error)) {
       throw new \Exception("{$reply->code}: {$reply->error}");
     }
 
-    return drupal_json_decode($reply->data);
+    return new \ArrayIterator(drupal_json_decode($reply->data));
   }
 }

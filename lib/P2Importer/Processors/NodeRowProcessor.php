@@ -2,12 +2,11 @@
 
 namespace P2Importer\Processors;
 
-use P2Importer\AbstractDataStorage;
 use P2Importer\ProcessorInterface;
-use P2Importer\ParserInterface;
+use P2Importer\DataContainer;
 
-class NodeRowProcessor extends AbstractDataStorage implements ProcessorInterface {
-  public function process(ParserInterface $row, \Pimple $registry) {
+class NodeRowProcessor implements ProcessorInterface {
+  public function process(DataContainer $row, \Pimple $registry) {
     $field_map = $registry['field_map'];
 
     global $user;
@@ -77,10 +76,6 @@ class NodeRowProcessor extends AbstractDataStorage implements ProcessorInterface
     return $this;
   }
 
-  public function preProcess(\Pimple $registry) {}
-
-  public function postProcess(\Pimple $registry) {}
-
   protected function stub_node(\Pimple $registry) {
     global $user;
 
@@ -113,15 +108,15 @@ class NodeRowProcessor extends AbstractDataStorage implements ProcessorInterface
   protected function add_unique(\EntityFieldQuery $query, $values, \Pimple $registry) {
     $field_map = $registry['field_map'];
     if (!empty($field_map['unique_fields'])) {
-      foreach ($field_map['unique_fields'] as $field) {
-        switch ($field['field_type']) {
+      foreach ($field_map['unique_fields'] as $unique_field) {
+        switch ($unique_field->field_type) {
           case 'field':
-            $value = $values[$field['field_name']];
-            $query->fieldCondition($field['field_name'], $field['table_field'],
-              $value[$field['table_field']], '=');
+            $value = $values[$unique_field->field_name];
+            $query->fieldCondition($unique_field->field_name, $unique_field->table_field,
+              $value[$unique_field->table_field], '=');
             break;
           case 'property':
-            $query->propertyCondition($field['field_name'], $values[$field['field_name']]);
+            $query->propertyCondition($unique_field->field_name, $values[$unique_field->field_name]);
             break;
         }
       }

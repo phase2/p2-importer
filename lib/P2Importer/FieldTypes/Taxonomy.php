@@ -3,9 +3,10 @@
 namespace P2Importer\FieldTypes;
 
 use P2Importer\AbstractFieldType;
+use P2Importer\DataContainer;
 
 class Taxonomy extends AbstractFieldType {
-  public function process(\Iterator $row) {
+  public function process(DataContainer $row, \Pimple $registry) {
     $value = $row[$this->getImportFieldName()];
     // Get the vocab
     if (empty($this->settings['vocab'])) {

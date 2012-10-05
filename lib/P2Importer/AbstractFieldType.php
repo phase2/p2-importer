@@ -42,7 +42,7 @@ abstract class AbstractFieldType implements FieldTypeInterface {
   /**
    * Get the value for this field from a row
    */
-  protected function getValue($row) {
+  protected function getValue(DataContainer $row) {
     return $row[$this->getImportFieldName()];
   }
 }

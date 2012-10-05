@@ -2,10 +2,11 @@
 
 namespace P2Importer\FieldTypes;
 
-use P2Importer\FieldTypes\DefaultFeildType;
+use P2Importer\DataContainer;
+use P2Importer\FieldTypes\DefaultFieldType;
 
-class Address extends DefaultFeildType {
-  public function process(\Iterator $row) {
+class Address extends DefaultFieldType {
+  public function process(DataContainer $row, \Pimple $registry) {
     $fields = array();
     if (is_array($this->settings['fields'])) {
       foreach ($this->settings['fields'] as $field) {
@@ -17,7 +18,9 @@ class Address extends DefaultFeildType {
 
     $address = implode(' ', $fields);
 
-    return parent::process($address);
+    return array(
+      'value' => $address,
+    );
   }
 }
 

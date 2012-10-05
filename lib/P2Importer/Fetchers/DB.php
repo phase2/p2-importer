@@ -3,7 +3,6 @@
 namespace P2Importer\Fetchers;
 
 use P2Importer\AbstractFetcher;
-use P2Importer\P2Exception;
 
 class DB extends AbstractFetcher {
   public function load() {
