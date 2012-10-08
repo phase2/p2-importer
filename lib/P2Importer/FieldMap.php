@@ -7,6 +7,7 @@ class FieldMap extends \Pimple {
   public function __construct() {
     $this['field_import_map'] = new \ArrayIterator();
     $this['unique_fields'] = new \ArrayIterator();
+    $this['local_to_import'] = new \ArrayIterator();
   }
 
   /**
@@ -16,6 +17,7 @@ class FieldMap extends \Pimple {
     $field_type = $c($this);
     $this[$field_type->getFieldName()] = $field_type;
     $this['field_import_map'][$field_type->getImportFieldName()] = $field_type->getFieldName();
+    $this['local_to_import'][$field_type->getFieldName()] = $field_type->getImportFieldName();
   }
 
   /**

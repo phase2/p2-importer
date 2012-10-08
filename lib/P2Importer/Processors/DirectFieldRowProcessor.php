@@ -21,7 +21,7 @@ class DirectFieldRowProcessor extends NodeRowProcessor {
     if ($nid = $this->node_exists($data, $registry)) {
       // Get the vids that need to be updated
       $vids = db_select('node_revision_states', 'nrs')
-        ->fields('nra', array('vid'))
+        ->fields('nrs', array('vid'))
         ->condition('nid', $nid)
         ->condition('status', 1)
         ->execute()
@@ -49,21 +49,9 @@ class DirectFieldRowProcessor extends NodeRowProcessor {
                 $real_value;
             }
 
-            // First update the revisions
-            db_update($revision_table)
-              ->condition('nid', $nid)
-              ->condition('vid', $vid)
-              ->fields($condition_fields)
-              ->execute();
-
-            // Update the main table
-            db_update($table)
-              ->condition('nid', $nid)
-              ->condition('vid', $vid)
-              ->fields($condition_fields)
-              ->execute();
-
-            db_ignore_slave();
+            $condition_fields['revision_id'] = $vid;
+            drupal_write_record($revision_table, $condition_fields, array('revision_id'));
+            drupal_write_record($table, $condition_fields, array('revision_id'));
           }
           catch (\Exception $e) {
             $transaction->rollback();
@@ -71,8 +59,28 @@ class DirectFieldRowProcessor extends NodeRowProcessor {
             throw $e;
           }
         }
-
       }
     }
+  }
+
+  protected function add_unique(\EntityFieldQuery $query, $values, \Pimple $registry) {
+    $field_map = $registry['field_map'];
+    if (!empty($field_map['unique_fields'])) {
+      foreach ($field_map['unique_fields'] as $unique_field) {
+        switch ($unique_field->field_type) {
+          case 'field':
+            $value = $values->getOriginalValue($unique_field->import_field_name);
+            $value = $value[LANGUAGE_NONE][0];
+            $query->fieldCondition($unique_field->field_name, $unique_field->table_field,
+              $value[$unique_field->table_field], '=');
+            break;
+          case 'property':
+            $query->propertyCondition($unique_field->field_name, $values[$unique_field->field_name]);
+            break;
+        }
+      }
+    }
+
+    return $query;
   }
 }

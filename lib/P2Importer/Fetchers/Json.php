@@ -28,6 +28,6 @@ class Json extends AbstractFetcher {
       throw new \Exception("{$reply->code}: {$reply->error}");
     }
 
-    return new \ArrayIterator(drupal_json_decode($reply->data));
+    return drupal_json_decode($reply->data);
   }
 }

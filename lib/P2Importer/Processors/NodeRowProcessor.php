@@ -117,7 +117,7 @@ class NodeRowProcessor implements ProcessorInterface {
       foreach ($field_map['unique_fields'] as $unique_field) {
         switch ($unique_field->field_type) {
           case 'field':
-            $value = $values[$unique_field->field_name];
+            $value = $values->getOriginalValue($unique_field->import_field_name);
             $query->fieldCondition($unique_field->field_name, $unique_field->table_field,
               $value[$unique_field->table_field], '=');
             break;

@@ -19,7 +19,8 @@ class Importer implements ImporterInterface {
       return FALSE;
     }
 
-    $data_container = $this->registry['data_container']->setAll($result)->lock();
+    $data_container = $this->registry['data_container'];
+    $data_container->setAll($result)->lock();
 
     if (!empty($result)) {
       $this->registry['parser']->parse($data_container, $this->registry);

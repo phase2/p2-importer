@@ -2,23 +2,30 @@
 
 namespace P2Importer;
 
-class DataContainer implements \IteratorAggregate, \ArrayAccess {
+class DataContainer implements \Iterator, \ArrayAccess {
   // the original values
-  protected $original_values;
+  protected $original_values = array();
   // the stored values
-  protected $values;
-  // do not allow originals to be changed
-  protected $lock_originals = FALSE;
+  protected $values = array();
+  // the originals are locked
+  protected $locked = FALSE;
 
 
   function __construct(array $values = array()) {
-    $this->original_values = new \RecursiveArrayIterator($values);
-    $this->values = new \RecursiveArrayIterator($values);
+    $this->original_values = $values;
+    $this->values = $values;
   }
 
   public function lock() {
-    $this->lock_originals = TRUE;
-    return $this;
+    $this->locked = TRUE;
+  }
+
+  public function isLocked() {
+    return $this->locked;
+  }
+
+  public function isUnLocked() {
+    return !$this->locked;
   }
 
   public function getOriginalValue($key) {
@@ -29,17 +36,18 @@ class DataContainer implements \IteratorAggregate, \ArrayAccess {
     return $this->original_values;
   }
 
-  public function setAll($values) {
+  public function setAll(array $values) {
     $this->values = $values;
 
-    if (!$this->lock_originals) {
+    if ($this->isUnLocked()) {
       $this->original_values = $values;
     }
+
     return $this;
   }
 
   public function unsetValues() {
-    $this->values = new \RecursiveArrayIterator();
+    $this->values = array();
     return $this;
   }
 
@@ -83,7 +91,7 @@ class DataContainer implements \IteratorAggregate, \ArrayAccess {
   public function offsetSet($offset, $value) {
     $this->values[$offset] = $value;
 
-    if (!$this->lock_originals) {
+    if ($this->isUnLocked()) {
       $this->original_values[$offset] = $value;
     }
   }
@@ -99,16 +107,59 @@ class DataContainer implements \IteratorAggregate, \ArrayAccess {
    */
   public function offsetUnset($offset) {
     unset($this->values[$offset]);
+
+    if ($this->isUnLocked()) {
+      unset($this->original_values[$offset]);
+    }
   }
 
   /**
-   * Retrieve an external iterator
+   * Return the current element
    *
-   * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-   * @return \Traversable An instance of an object implementing Iterator or Traversable
+   * @link http://php.net/manual/en/iterator.current.php
+   * @return mixed Can return any type.
    */
-  public function getIterator() {
-    return $this->values;
+  public function current() {
+    return current($this->values);
   }
 
-}
+  /**
+   * Move forward to next element
+   *
+   * @link http://php.net/manual/en/iterator.next.php
+   * @return void Any returned value is ignored.
+   */
+  public function next() {
+    next($this->values);
+  }
+
+  /**
+   * Return the key of the current element
+   *
+   * @link http://php.net/manual/en/iterator.key.php
+   * @return mixed scalar on success, or null on failure.
+   */
+  public function key() {
+    return key($this->values);
+  }
+
+  /**
+   * Checks if current position is valid
+   *
+   * @link http://php.net/manual/en/iterator.valid.php
+   * @return boolean The return value will be casted to boolean and then evaluated.
+   *       Returns true on success or false on failure.
+   */
+  public function valid() {
+    return key($this->values) !== NULL;
+  }
+
+  /**
+   * Rewind the Iterator to the first element
+   *
+   * @link http://php.net/manual/en/iterator.rewind.php
+   * @return void Any returned value is ignored.
+   */
+  public function rewind() {
+    reset($this->values);
+  }}

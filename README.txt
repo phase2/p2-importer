@@ -18,7 +18,7 @@ Parser:  Pares the Iterator from the Fetcher using the Field Types
 
 Processor:  Takes the output from the Parser and Persists the information
 
-Data Container:  The Transverible Array object
+Data Container:  See P2Importer\DataContainer
 
 
             ----------------               -------------
@@ -83,3 +83,6 @@ Row Processor - This is what persists the data to drupal
     Does not work with file field
     Only works with SQL field storage.
     Only works on existing entities and not new ones
+    
+    
+    

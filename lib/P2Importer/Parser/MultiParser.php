@@ -5,7 +5,7 @@ namespace P2Importer\Parser;
 use P2Importer\DataContainer;
 use P2Importer\ParserInterface;
 
-class MultiRowParser implements ParserInterface {
+class MultiParser implements ParserInterface {
   public function parse(DataContainer $result, \Pimple $registry) {
     $this->preProcess($result, $registry);
     foreach ($result as $key => $row) {
