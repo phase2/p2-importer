@@ -162,4 +162,5 @@ class DataContainer implements \Iterator, \ArrayAccess {
    */
   public function rewind() {
     reset($this->values);
-  }}
+  }
+}
