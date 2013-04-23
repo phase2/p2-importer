@@ -25,7 +25,7 @@ class Json extends AbstractFetcher {
     $reply = drupal_http_request($this->settings['url']);
 
     if (!empty($reply->error)) {
-      throw new \Exception("{$reply->code}: {$reply->error}");
+      throw new \Exception("{$reply->code}: {$reply->error} url: {$this->settings['url']}");
     }
 
     return drupal_json_decode($reply->data);
