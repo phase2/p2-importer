@@ -70,7 +70,7 @@ class DirectFieldRowProcessor extends NodeRowProcessor {
             $table = _field_sql_storage_tablename($field_info);
             $fields = array();
             foreach($value as $key => $real_value) {
-              if ($key != 'safe_value') {
+              if (!in_array($key, array('safe_value', 'safe_summary'))) {
                 $fields[_field_sql_storage_columnname($field_name, $key)] =
                   $real_value;
               }
