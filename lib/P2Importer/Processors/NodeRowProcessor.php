@@ -97,7 +97,6 @@ class NodeRowProcessor implements ProcessorInterface {
   protected function node_exists($values, \Pimple $registry) {
     $query = new \EntityFieldQuery();
     $query->entityCondition('entity_type', 'node')
-      ->propertyCondition('status', 1)
       ->entityCondition('bundle', $registry['ctype']);
     $query = $this->add_unique($query, $values, $registry);
 
